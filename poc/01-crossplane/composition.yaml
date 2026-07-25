@@ -1,0 +1,39 @@
+# =====================================================================
+# Crossplane Composition
+# =====================================================================
+# TODO 3: Completa este archivo con tu Composition
+#
+# Guía de referencia:
+#   https://docs.crossplane.io/latest/concepts/compositions/
+#   https://docs.crossplane.io/latest/concepts/patch-and-transform/
+#   https://marketplace.upbound.io/providers/tages/provider-postgresql/v0.1.0?tab=managedResources
+#
+# Esta Composition debe:
+#   - Referenciar el XRD que creaste en xrd.yaml
+#   - Crear al menos un Database (Managed Resource del provider)
+#   - Usar al menos un patch FromCompositeFieldPath
+#   - Referenciar el ProviderConfig 'postgresql-config'
+# =====================================================================
+
+# apiVersion: apiextensions.crossplane.io/v1
+# kind: Composition
+# metadata:
+#   name: postgresql-composition
+# spec:
+#   compositeTypeRef:
+#     apiVersion: database.poc.io/v1alpha1
+#     kind: XPostgreSQLInstance
+#   resources:
+#     - name: postgresql-database
+#       base:
+#         apiVersion: ...
+#         kind: Database
+#         spec:
+#           forProvider:
+#             ...
+#           providerConfigRef:
+#             name: postgresql-config
+#       patches:
+#         - type: FromCompositeFieldPath
+#           fromFieldPath: "spec.parameters.???"
+#           toFieldPath: "spec.forProvider.???"

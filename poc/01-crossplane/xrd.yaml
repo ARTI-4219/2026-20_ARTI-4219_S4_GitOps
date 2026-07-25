@@ -1,0 +1,32 @@
+# =====================================================================
+# Crossplane XRD — CompositeResourceDefinition
+# =====================================================================
+# TODO 2: Completa este archivo con tu XRD
+#
+# Guía de referencia:
+#   https://docs.crossplane.io/latest/concepts/composite-resource-definitions/
+#
+# Este XRD debe:
+#   - Definir un Composite Resource llamado XPostgreSQLInstance
+#   - Definir un Claim llamado PostgreSQLInstance
+#   - Exponer al menos 2 parámetros (ej: dbName, owner)
+#   - Usar el grupo database.poc.io/v1alpha1
+# =====================================================================
+
+# apiVersion: apiextensions.crossplane.io/v1
+# kind: CompositeResourceDefinition
+# metadata:
+#   name: ...
+# spec:
+#   group: ...
+#   names:
+#     kind: ...
+#   claimNames:
+#     kind: ...
+#   versions:
+#     - name: v1alpha1
+#       served: true
+#       referenceable: true
+#       schema:
+#         openAPIV3Schema:
+#           ...

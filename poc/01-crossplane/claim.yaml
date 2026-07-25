@@ -1,0 +1,30 @@
+# =====================================================================
+# Crossplane Claim — PostgreSQLInstance
+# =====================================================================
+# TODO 4: Completa este archivo con tu Claim
+#
+# El Claim es lo que el equipo de desarrollo usa para solicitar
+# una base de datos. Debe corresponder con el XRD que definiste.
+#
+# Guía de referencia:
+#   https://docs.crossplane.io/latest/concepts/composite-resources/
+#
+# Este Claim debe:
+#   - Usar el apiVersion y kind definidos en tu XRD (claimNames)
+#   - Especificar valores para los parámetros que definiste
+#   - Estar en el namespace 'default'
+# =====================================================================
+
+# apiVersion: database.poc.io/v1alpha1
+# kind: PostgreSQLInstance
+# metadata:
+#   name: mi-base-de-datos
+#   namespace: default
+# spec:
+#   parameters:
+#     dbName: ???
+#     owner: ???
+#   compositionRef:
+#     name: postgresql-composition
+#   writeConnectionSecretToRef:
+#     name: postgresql-conn-secret

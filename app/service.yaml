@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitops-demo-svc
+  namespace: default
+  labels:
+    app: gitops-demo
+    managed-by: argocd
+spec:
+  selector:
+    app: gitops-demo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

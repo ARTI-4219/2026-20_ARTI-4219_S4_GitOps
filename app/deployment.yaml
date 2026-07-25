@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitops-demo-app
+  namespace: default
+  labels:
+    app: gitops-demo
+    version: "1.24.0"
+    managed-by: argocd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitops-demo
+  template:
+    metadata:
+      labels:
+        app: gitops-demo
+        version: "1.24.0"
+    spec:
+      containers:
+        - name: gitops-demo
+          image: nginx:1.24.0   # ← Cambia esta versión en la Demo de la Fase 3
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
