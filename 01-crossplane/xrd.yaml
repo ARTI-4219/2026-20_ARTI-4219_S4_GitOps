@@ -8,7 +8,6 @@
 #
 # Este XRD debe:
 #   - Definir un Composite Resource llamado XPostgreSQLInstance
-#   - Definir un Claim llamado PostgreSQLInstance
 #   - Exponer al menos 2 parámetros (ej: dbName, owner)
 #   - Usar el grupo database.poc.io/v1alpha1
 # =====================================================================
@@ -17,11 +16,11 @@
 # kind: CompositeResourceDefinition
 # metadata:
 #   name: ...
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "1"
 # spec:
 #   group: ...
 #   names:
-#     kind: ...
-#   claimNames:
 #     kind: ...
 #   versions:
 #     - name: v1alpha1

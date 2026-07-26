@@ -1,0 +1,15 @@
+# =====================================================================
+# Crossplane Claim — XPostgreSQLInstance
+# =====================================================================
+
+# apiVersion: ???
+# kind: ???
+# metadata:
+#   name: mi-base-de-datos
+#   namespace: default
+# annotations:
+#     argocd.argoproj.io/sync-wave: "3"
+# spec:
+#   parameters:
+#     dbName: ???
+#     owner: ???

@@ -1,0 +1,34 @@
+# =====================================================================
+# Crossplane Composition
+# =====================================================================
+
+# apiVersion: apiextensions.crossplane.io/v1
+# kind: Composition
+# metadata:
+#   name: postgresql-composition
+# spec:
+#   compositeTypeRef:
+#     apiVersion: ????
+#     kind: ???
+#     mode: Pipeline
+#   pipeline:
+#   - step: patch-and-transform
+#     functionRef:
+#       name: function-patch-and-transform
+#     input:
+#       apiVersion: pt.fn.crossplane.io/v1beta1
+#       kind: Resources
+#       resources:
+#       - name: postgresql-database
+#         base:
+#           apiVersion: ...
+#           kind: Database
+#           spec:
+#             forProvider:
+#             ...
+#           providerConfigRef:
+#             name: postgresql-config
+#         patches:
+#           - type: FromCompositeFieldPath
+#             fromFieldPath: "spec.parameters.???"
+#             toFieldPath: "spec.forProvider.???"
