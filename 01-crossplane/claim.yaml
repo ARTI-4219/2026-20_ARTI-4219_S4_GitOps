@@ -1,15 +1,22 @@
 # =====================================================================
-# Crossplane Claim — XPostgreSQLInstance
+# Crossplane Claim — PostgreSQLInstance
+# =====================================================================
+# TODO 4: El equipo de desarrollo solicita una base de datos usando la
+# API definida en el XRD, sin conocer los Managed Resources subyacentes.
 # =====================================================================
 
-# apiVersion: ???
-# kind: ???
-# metadata:
-#   name: mi-base-de-datos
-#   namespace: default
-# annotations:
-#     argocd.argoproj.io/sync-wave: "3"
-# spec:
-#   parameters:
-#     dbName: ???
-#     owner: ???
+apiVersion: database.poc.io/v1alpha1
+kind: PostgreSQLInstance
+metadata:
+  name: mi-base-de-datos
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  compositionRef:
+    name: postgresql-composition
+  parameters:
+    dbName: appdb
+    owner: postgres
+    encoding: UTF8
+    connectionLimit: -1

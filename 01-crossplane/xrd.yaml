@@ -1,31 +1,74 @@
 # =====================================================================
 # Crossplane XRD — CompositeResourceDefinition
 # =====================================================================
-# TODO 2: Completa este archivo con tu XRD
+# TODO 2: Define la API que consumirán los equipos de desarrollo.
 #
-# Guía de referencia:
-#   https://docs.crossplane.io/latest/concepts/composite-resource-definitions/
+#   - Composite Resource: XPostgreSQLInstance
+#   - Grupo/versión:      database.poc.io/v1alpha1
+#   - Claim:              PostgreSQLInstance (namespaced)
+#   - Parámetros:         dbName (requerido), owner (requerido),
+#                         encoding y connectionLimit (opcionales)
 #
-# Este XRD debe:
-#   - Definir un Composite Resource llamado XPostgreSQLInstance
-#   - Exponer al menos 2 parámetros (ej: dbName, owner)
-#   - Usar el grupo database.poc.io/v1alpha1
+# Nota sobre Crossplane v2: el scope por defecto es `LegacyCluster`, que es
+# el único que permite Claims y el único que puede componer Managed Resources
+# cluster-scoped como el `Database` de tages/provider-postgresql.
 # =====================================================================
 
-# apiVersion: apiextensions.crossplane.io/v1
-# kind: CompositeResourceDefinition
-# metadata:
-#   name: ...
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "1"
-# spec:
-#   group: ...
-#   names:
-#     kind: ...
-#   versions:
-#     - name: v1alpha1
-#       served: true
-#       referenceable: true
-#       schema:
-#         openAPIV3Schema:
-#           ...
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  # El nombre del XRD debe ser <plural>.<group>
+  name: xpostgresqlinstances.database.poc.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  group: database.poc.io
+  scope: LegacyCluster
+  names:
+    kind: XPostgreSQLInstance
+    plural: xpostgresqlinstances
+  claimNames:
+    kind: PostgreSQLInstance
+    plural: postgresqlinstances
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    dbName:
+                      type: string
+                      description: Nombre de la base de datos a crear en PostgreSQL.
+                      pattern: '^[a-z][a-z0-9_-]{2,62}$'
+                    owner:
+                      type: string
+                      description: Rol de PostgreSQL que será propietario de la base de datos.
+                      default: postgres
+                    encoding:
+                      type: string
+                      description: Codificación de caracteres de la base de datos.
+                      default: UTF8
+                    connectionLimit:
+                      type: integer
+                      description: Número máximo de conexiones concurrentes (-1 = sin límite).
+                      default: -1
+                      minimum: -1
+                  required:
+                    - dbName
+                    - owner
+              required:
+                - parameters
+            status:
+              type: object
+              properties:
+                dbName:
+                  type: string
+                  description: Nombre efectivo de la base de datos aprovisionada.

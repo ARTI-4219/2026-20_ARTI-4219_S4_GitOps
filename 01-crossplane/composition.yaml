@@ -1,34 +1,73 @@
 # =====================================================================
 # Crossplane Composition
 # =====================================================================
+# TODO 3: Materializa el XRD XPostgreSQLInstance en Managed Resources
+# reales del provider tages/provider-postgresql.
+#
+#   - compositeTypeRef  -> apunta al XRD del TODO 2
+#   - pipeline          -> function-patch-and-transform (function.yaml)
+#   - patches           -> pasan los parámetros del Claim al Database
+#   - providerConfigRef -> postgresql-config (provider-config.yaml)
+# =====================================================================
 
-# apiVersion: apiextensions.crossplane.io/v1
-# kind: Composition
-# metadata:
-#   name: postgresql-composition
-# spec:
-#   compositeTypeRef:
-#     apiVersion: ????
-#     kind: ???
-#     mode: Pipeline
-#   pipeline:
-#   - step: patch-and-transform
-#     functionRef:
-#       name: function-patch-and-transform
-#     input:
-#       apiVersion: pt.fn.crossplane.io/v1beta1
-#       kind: Resources
-#       resources:
-#       - name: postgresql-database
-#         base:
-#           apiVersion: ...
-#           kind: Database
-#           spec:
-#             forProvider:
-#             ...
-#           providerConfigRef:
-#             name: postgresql-config
-#         patches:
-#           - type: FromCompositeFieldPath
-#             fromFieldPath: "spec.parameters.???"
-#             toFieldPath: "spec.forProvider.???"
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: postgresql-composition
+  labels:
+    provider: postgresql
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  compositeTypeRef:
+    apiVersion: database.poc.io/v1alpha1
+    kind: XPostgreSQLInstance
+  mode: Pipeline
+  pipeline:
+    - step: patch-and-transform
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: postgresql-database
+            base:
+              apiVersion: postgresql.postgresql.upbound.io/v1alpha1
+              kind: Database
+              spec:
+                # Referencia a la configuración de conexión del provider
+                providerConfigRef:
+                  name: postgresql-config
+                # Al borrar el Claim se borra la base de datos real
+                deletionPolicy: Delete
+                forProvider:
+                  encoding: UTF8
+                  connectionLimit: -1
+                  allowConnections: true
+            patches:
+              # dbName -> nombre externo del recurso (lo que usa el provider
+              # como identificador real en PostgreSQL)
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: metadata.annotations[crossplane.io/external-name]
+              # dbName -> spec.forProvider.name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.dbName
+                toFieldPath: spec.forProvider.name
+              # owner -> spec.forProvider.owner
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.owner
+                toFieldPath: spec.forProvider.owner
+              # encoding -> spec.forProvider.encoding
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.encoding
+                toFieldPath: spec.forProvider.encoding
+              # connectionLimit -> spec.forProvider.connectionLimit
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.connectionLimit
+                toFieldPath: spec.forProvider.connectionLimit
+              # Devuelve al XR/Claim el nombre efectivo de la base de datos
+              - type: ToCompositeFieldPath
+                fromFieldPath: spec.forProvider.name
+                toFieldPath: status.dbName
