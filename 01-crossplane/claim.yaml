@@ -16,7 +16,7 @@ spec:
   compositionRef:
     name: postgresql-composition
   parameters:
-    dbName: appdb
+    dbName: appdb-V2
     owner: postgres
     encoding: UTF8
     connectionLimit: -1
